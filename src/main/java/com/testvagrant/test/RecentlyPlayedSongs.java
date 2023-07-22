@@ -1,5 +1,6 @@
 package com.testvagrant.test;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -7,100 +8,105 @@ import java.util.Queue;
 
 public class RecentlyPlayedSongs {
 
-	private Map<String, Queue<String>> userSongsMap;
-	private int initialCapacity = 3;
+    private Map<String, Queue<String>> userSongsMap;
+    private int initialCapacity = 3;
 
-	public RecentlyPlayedSongs(Map<String, Queue<String>> userSongsMap, int initialCapacity) {
-		this.userSongsMap = userSongsMap;
-		this.initialCapacity = initialCapacity;
-	}
+    public RecentlyPlayedSongs(int initialCapacity) {
+        this.userSongsMap = new HashMap<String, Queue<String>>();
+        this.initialCapacity = initialCapacity;
+    }
 
-	public Map<String, Queue<String>> getUserSongsMap() {
-		return userSongsMap;
-	}
+    public RecentlyPlayedSongs(Map<String, Queue<String>> userSongsMap, int initialCapacity) {
+        this.userSongsMap = userSongsMap;
+        this.initialCapacity = initialCapacity;
+    }
 
-	public void setUserSongsMap(Map<String, Queue<String>> userSongsMap) {
-		this.userSongsMap = userSongsMap;
-	}
+    public Map<String, Queue<String>> getUserSongsMap() {
+        return userSongsMap;
+    }
 
-	public int getInitialCapacity() { 
-		return initialCapacity;
-	}
+    public void setUserSongsMap(Map<String, Queue<String>> userSongsMap) {
+        this.userSongsMap = userSongsMap;
+    }
 
-	public boolean removeLeastRecentlyPlayedSongFromPlayList(String userId) {
+    public int getInitialCapacity() {
+        return initialCapacity;
+    }
 
-		if (userSongsMap.isEmpty()) {
-			System.err.println("Data store is empty");
-			return false;
-		}
+    public boolean removeLeastRecentlyPlayedSongFromPlayList(String user) {
 
-		if (userId == null || !userSongsMap.containsKey(userId)) {
-			System.err.println("Invalid User Name");
-			return false;
-		}
+        if (userSongsMap.isEmpty()) {
+            System.err.println("Data store is empty");
+            return false;
+        }
 
-		userSongsMap.get(userId).remove();
-		return true;
-	}
+        if (user == null || !userSongsMap.containsKey(user)) {
+            System.err.println(user + "Invalid User Name");
+            return false;
+        }
 
-	public boolean addSongToPlaylist(String userId, String songName) {
+        userSongsMap.get(user).remove();
+        return true;
+    }
 
-		if (userId == null) {
-			System.err.println("Invalid User Name");
-			return false;
-		}
+    public boolean addSongToPlaylist(String user, String songName) {
 
-		userSongsMap.putIfAbsent(userId, new LinkedList<>());
+        if (user == null) {
+            System.err.println("Invalid User Name");
+            return false;
+        }
 
-		if (userSongsMap.get(userId).size() == initialCapacity) {
-			boolean flag = removeLeastRecentlyPlayedSongFromPlayList(userId);
-			if (!flag) {
-				System.err.println("Song not added, capacity is full");
-				return false;
-			}
-		}
+        userSongsMap.putIfAbsent(user, new LinkedList<String>());
 
-		userSongsMap.get(userId).add(songName);
+        if (userSongsMap.get(user).size() == initialCapacity) {
+            boolean flag = removeLeastRecentlyPlayedSongFromPlayList(user);
+            if (!flag) {
+                System.err.println("Song not added, capacity is full");
+                return false;
+            }
+        }
 
-		return true;
-	}
+        userSongsMap.get(user).add(songName);
 
-	public void displayUserPlaylist(String userName) {
+        return true;
+    }
 
-		if (userName == null || !userSongsMap.containsKey(userName)) {
-			System.err.println("User not found");
-			return;
-		}
+    public void displayUserPlaylist(String userName) {
 
-		for (String song : userSongsMap.get(userName)) {
-			System.out.println(song);
-		}
-	}
+        if (userName == null || !userSongsMap.containsKey(userName)) {
+            System.err.println("User not found");
+            return;
+        }
 
-	public void displayAllUsersPlaylist() {
+        for (String song : userSongsMap.get(userName)) {
+            System.out.println(song);
+        }
+    }
 
-		for (Entry<String, Queue<String>> entry : userSongsMap.entrySet()) {
-			System.out.println(entry.getKey());
-			for (String song : entry.getValue()) {
-				System.out.println(song);
-			}
-		}
-	}
+    public void displayAllUsersPlaylist() {
 
-	public String[] getUserPlaylist(String userName) {
+        for (Entry<String, Queue<String>> entry : userSongsMap.entrySet()) {
+            System.out.println(entry.getKey());
+            for (String song : entry.getValue()) {
+                System.out.println(song);
+            }
+        }
+    }
 
-		if (userName == null || !userSongsMap.containsKey(userName)) {
-			System.err.println("User not found");
-			return null;
-		}
-		
-		if(userSongsMap.get(userName).isEmpty()) {
-			System.err.println("Playlist is empty");
-			return null;
-		}
-		
-		return userSongsMap.get(userName).toArray(new String[userSongsMap.get(userName).size()]);
-		
-	}
+    public String[] getUserPlaylist(String userName) {
+
+        if (userName == null || !userSongsMap.containsKey(userName)) {
+            System.err.println(userName + " User not found");
+            return null;
+        }
+
+        if (userSongsMap.get(userName).isEmpty()) {
+            System.err.println(userName + " Playlist is empty");
+            return null;
+        }
+
+        return userSongsMap.get(userName).toArray(new String[userSongsMap.get(userName).size()]);
+
+    }
 
 }
